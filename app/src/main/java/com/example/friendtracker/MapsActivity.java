@@ -72,8 +72,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             LatLng lastLocation = new LatLng(location.latitude,location.longitude);
                             CameraPosition cameraPosition = new CameraPosition.Builder()
                                     .target(lastLocation)
-                                    .zoom(10)
-                                    .tilt(30)
                                     .build();
                             mMap.addMarker(new MarkerOptions().position(lastLocation)
                                     .title(dataSnapshot.child("date").getValue().toString() +" " + dataSnapshot.child("time").getValue().toString())).showInfoWindow();

@@ -4,4 +4,5 @@
     <string name="drawer_close">Drawer Close</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_track_friends_all_maps">Map</string>
+    <string name="google_maps_key">AIzaSyCgHakxatdEDcxS1SauGSG4-NLWiON4SQs</string>
 </resources>

@@ -42,5 +42,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:6.0.2'
     implementation 'com.firebaseui:firebase-ui-auth:6.0.2'
     implementation 'com.firebaseui:firebase-ui-storage:6.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
+
 
 }
