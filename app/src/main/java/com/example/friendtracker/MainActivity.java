@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        checkForPermissions();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
@@ -146,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addLocationListener() {
-        checkForPermissions();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_FINE);

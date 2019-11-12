@@ -2,12 +2,14 @@ package com.example.friendtracker;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,10 +18,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
@@ -33,6 +41,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +51,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
@@ -125,16 +135,33 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
         @Override
         protected void onBeforeClusterItemRendered(MyItem item, MarkerOptions markerOptions) {
-            Picasso.get().load(item.getProfileImage()).placeholder(R.drawable.profile).resize(R.dimen.custom_profile_image,R.dimen.custom_profile_image).into(mImageView);
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
 
         @Override
+        protected void onClusterItemRendered(MyItem clusterItem, final Marker marker) {
+            Glide.with(TrackFriendsAllMaps.this)
+                    .load(clusterItem.getProfileImage())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .thumbnail(0.1f)
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            mImageView.setImageDrawable(resource);
+                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon()));
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+                    });
+        }
+
+        @Override
         protected void onBeforeClusterRendered(Cluster<MyItem> cluster, MarkerOptions markerOptions) {
-            mClusterImageView.setImageDrawable(getResources().getDrawable(R.drawable.find_people));
-            Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
-            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+            super.onBeforeClusterRendered(cluster,markerOptions);
         }
 
         @Override
@@ -145,36 +172,16 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
     @Override
     public boolean onClusterClick(Cluster<MyItem> cluster) {
-        double minLat = 0;
-        double minLng = 0;
-        double maxLat = 0;
-        double maxLng = 0;
-        for (MyItem p : cluster.getItems()) {
-            double lat = p.getPosition().latitude;
-            double lng = p.getPosition().longitude;
-            if (minLat == 0 & minLng == 0 & maxLat == 0 & maxLng == 0) {
-                minLat = maxLat = lat;
-                minLng = maxLng = lng;
-            }
-            if (lat > maxLat) {
-                maxLat = lat;
-            }
-            if (lng > maxLng) {
-                maxLng = lng;
-            }
-            if (lat < minLat) {
-                minLat = lat;
-            }
-            if (lng < minLng) {
-                minLng = lng;
-            }
+       LatLngBounds.Builder builder = LatLngBounds.builder();
+        for (ClusterItem item : cluster.getItems()) {
+            builder.include(item.getPosition());
         }
-
-        LatLng sw = new LatLng(minLat, minLng);
-        LatLng ne = new LatLng(maxLat, maxLng);
-        LatLngBounds bounds = new LatLngBounds(sw, ne);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+        final LatLngBounds bounds = builder.build();
+        try {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return true;
     }
