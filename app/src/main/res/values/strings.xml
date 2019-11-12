@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FriendTracker</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_track_friends_all_maps">Map</string>
+</resources>

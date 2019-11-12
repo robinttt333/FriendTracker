@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsActivity"
+    android:background="@drawable/download"
+    >
+
+    <include
+        android:id="@+id/settings_toolbar"
+        layout="@layout/app_bar_layout">
+    </include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/settings_toolbar"
+        >
+       <RelativeLayout
+           android:layout_width="match_parent"
+           android:layout_height="match_parent">
+
+           <de.hdodenhof.circleimageview.CircleImageView
+               android:layout_width="250dp"
+               android:layout_height="250dp"
+               android:layout_alignParentTop="true"
+               android:layout_centerHorizontal="true"
+               android:layout_marginTop="10dp"
+               android:src="@drawable/profile"
+               android:id="@+id/settings_profile_image"
+               />
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/settings_status"
+               android:layout_below="@+id/settings_profile_image"
+               android:layout_marginLeft="40dp"
+               android:layout_marginRight="40dp"
+               android:background="@drawable/inputs"
+               android:hint="Settings Status"
+               android:padding="30dp"
+               android:textColor="@android:color/background_dark"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_marginTop="6dp"
+               />
+
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/settings_username"
+               android:layout_below="@+id/settings_status"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:background="@drawable/inputs"
+               android:hint="Username"
+               android:padding="12dp"
+               android:textColor="@android:color/background_dark"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_marginTop="30dp"
+               />
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/settings_profile_full_name"
+               android:layout_below="@+id/settings_username"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:background="@drawable/inputs"
+               android:hint="FullName"
+               android:padding="12dp"
+               android:textColor="@android:color/background_dark"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_marginTop="6dp"
+               />
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/settings_country"
+               android:layout_below="@+id/settings_profile_full_name"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:background="@drawable/inputs"
+               android:hint="Country"
+               android:padding="12dp"
+               android:textColor="@android:color/background_dark"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_marginTop="6dp"
+               />
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/settings_dob"
+               android:layout_below="@+id/settings_country"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:background="@drawable/inputs"
+               android:hint="DOB"
+               android:padding="12dp"
+               android:textColor="@android:color/background_dark"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_marginTop="6dp"
+               />
+
+           <EditText
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/settings_gender"
+               android:layout_below="@+id/settings_dob"
+               android:layout_marginLeft="10dp"
+               android:layout_marginRight="10dp"
+               android:background="@drawable/inputs"
+               android:hint="Gender"
+               android:padding="12dp"
+               android:textColor="@android:color/background_dark"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               android:layout_marginTop="6dp"
+               />
+
+           <Button
+               android:id="@+id/update_account_settings_button"
+               android:layout_width="match_parent"
+               android:layout_height="60dp"
+               android:layout_below="@+id/settings_gender"
+               android:text="Update"
+               android:background="@drawable/button"
+               android:layout_margin="20dp"
+               android:textAllCaps="false"
+               android:textSize="20sp"
+               android:textStyle="bold"
+               />
+       </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>
