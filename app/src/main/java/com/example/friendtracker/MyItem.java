@@ -1,39 +1,41 @@
 package com.example.friendtracker;
 
+import android.webkit.GeolocationPermissions;
+
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 public class MyItem implements ClusterItem {
-    public String name;
-    public int profilePhoto;
-    private LatLng mPosition;
+    private String username,profileImage;
+    private GeoLocation location;
 
-    public MyItem(LatLng position, String name, int pictureResource) {
-        this.name = name;
-        profilePhoto = pictureResource;
-        mPosition = position;
+    public MyItem(String username, String profileImage, GeoLocation location) {
+        this.username = username;
+        this.profileImage = profileImage;
+        this.location = location;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public GeoLocation getLocation() {
+        return location;
     }
 
     @Override
     public LatLng getPosition() {
-        return mPosition;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getProfilePhoto() {
-        return profilePhoto;
-    }
-
-    public LatLng getmPosition() {
-        return mPosition;
+        return new LatLng(location.latitude,location.longitude);
     }
 
     @Override
     public String getTitle() {
-        return null;
+        return username;
     }
 
     @Override

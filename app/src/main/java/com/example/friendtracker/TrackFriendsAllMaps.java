@@ -56,10 +56,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyCallback,ClusterManager.OnClusterClickListener<MyItem>, ClusterManager.OnClusterInfoWindowClickListener<MyItem>, ClusterManager.OnClusterItemClickListener<MyItem>, ClusterManager.OnClusterItemInfoWindowClickListener<MyItem> {
+public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyCallback, ClusterManager.OnClusterClickListener<MyItem>, ClusterManager.OnClusterInfoWindowClickListener<MyItem>, ClusterManager.OnClusterItemClickListener<MyItem>, ClusterManager.OnClusterItemInfoWindowClickListener<MyItem> {
 
     private GoogleMap mMap;
     private ClusterManager<MyItem> mClusterManager;
+    private List<MyItem> myItemsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +70,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map_all_friends);
         mapFragment.getMapAsync(this);
+        myItemsList = new ArrayList<MyItem>();
 
     }
 
@@ -123,14 +125,14 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
         @Override
         protected void onBeforeClusterItemRendered(MyItem item, MarkerOptions markerOptions) {
-            mImageView.setImageResource(item.profilePhoto);
+            Picasso.get().load(item.getProfileImage()).placeholder(R.drawable.profile).resize(R.dimen.custom_profile_image,R.dimen.custom_profile_image).into(mImageView);
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
 
         @Override
         protected void onBeforeClusterRendered(Cluster<MyItem> cluster, MarkerOptions markerOptions) {
-            mClusterImageView.setImageDrawable(getResources().getDrawable(R.drawable.profile));
+            mClusterImageView.setImageDrawable(getResources().getDrawable(R.drawable.find_people));
             Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
@@ -147,23 +149,23 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
         double minLng = 0;
         double maxLat = 0;
         double maxLng = 0;
-        for(MyItem p : cluster.getItems()){
+        for (MyItem p : cluster.getItems()) {
             double lat = p.getPosition().latitude;
             double lng = p.getPosition().longitude;
-            if(minLat == 0 & minLng ==0 & maxLat ==0& maxLng == 0){
+            if (minLat == 0 & minLng == 0 & maxLat == 0 & maxLng == 0) {
                 minLat = maxLat = lat;
                 minLng = maxLng = lng;
             }
-            if(lat > maxLat){
+            if (lat > maxLat) {
                 maxLat = lat;
             }
-            if(lng > maxLng){
+            if (lng > maxLng) {
                 maxLng = lng;
             }
-            if(lat < minLat){
+            if (lat < minLat) {
                 minLat = lat;
             }
-            if(lng < minLng){
+            if (lng < minLng) {
                 minLng = lng;
             }
         }
@@ -184,7 +186,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
     }
 
     protected void startDemo() {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(37.780633, -122.396788), 14f));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(20, 70), 3));
 
         mClusterManager = new ClusterManager<MyItem>(this, mMap);
         mClusterManager.setRenderer(new MyItemRenderer());
@@ -193,33 +195,51 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mClusterManager.setOnClusterClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
-
         addItems();
-        mClusterManager.cluster();
     }
 
     private void addItems() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference FriendsRef = FirebaseDatabase.getInstance().getReference().child(uid);
-        FriendsRef.addValueEventListener(new ValueEventListener() {
+        DatabaseReference FriendsRef = FirebaseDatabase.getInstance().getReference().child("Friends").child(uid);
+        FriendsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.exists()){
-                    for(DataSnapshot user: dataSnapshot.getChildren()){
-                        String friendUid = user.getKey();
-                        DatabaseReference UserRef = FirebaseDatabase.getInstance().getReference("Users");
 
-                        UserRef.addValueEventListener(new ValueEventListener() {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot user : dataSnapshot.getChildren()) {
+
+                        final String friendUid = user.getKey();
+                        DatabaseReference UserRef = FirebaseDatabase.getInstance().getReference("Users").child(friendUid);
+                        UserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if(dataSnapshot.exists()){
-                                    String friendUserName = dataSnapshot.child("username").getValue().toString();
-                                    String profileImage = "";
-                                    if(dataSnapshot.hasChild("profileImage")){
-                                        profileImage = dataSnapshot.child("profileImage").getValue().toString();
+                                if (dataSnapshot.exists()) {
+                                    final String friendUserName = dataSnapshot.child("username").getValue().toString();
+                                    final String friendProfileImage;
+                                    if (dataSnapshot.hasChild("profileImage")) {
+                                        friendProfileImage = dataSnapshot.child("profileImage").getValue().toString();
                                     }
+                                    else friendProfileImage = "";
 
-                                    
+                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations").child(friendUid);
+                                    GeoFire geoFire = new GeoFire(ref);
+                                    geoFire.getLocation("Location", new LocationCallback() {
+                                        @Override
+                                        public void onLocationResult(String key, GeoLocation location) {
+                                            if (location != null) {
+                                                MyItem item = new MyItem(friendUserName, friendProfileImage, location);
+                                                mClusterManager.addItem(item);
+                                                mClusterManager.cluster();
+
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
 
 
                                 }
@@ -232,12 +252,10 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
                         });
 
 
-
-
                     }
-                }
-                else {
-                    Toast.makeText(TrackFriendsAllMaps.this,"You don't have any friends as of now",Toast.LENGTH_SHORT);
+
+                } else {
+                    Toast.makeText(TrackFriendsAllMaps.this, "You don't have any friends as of now", Toast.LENGTH_SHORT);
                 }
             }
 
