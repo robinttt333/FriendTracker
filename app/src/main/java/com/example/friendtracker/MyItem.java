@@ -7,17 +7,27 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
 
 public class MyItem implements ClusterItem {
-    private String username,profileImage;
+    private String username, profileImage, date, time;
     private GeoLocation location;
 
-    public MyItem(String username, String profileImage, GeoLocation location) {
+    public MyItem(String username, String profileImage, String date, String time, GeoLocation location) {
         this.username = username;
         this.profileImage = profileImage;
         this.location = location;
+        this.date = date;
+        this.time = time;
     }
 
     public String getUsername() {
         return username;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time.substring(0,time.lastIndexOf(":"));
     }
 
     public String getProfileImage() {
@@ -30,7 +40,7 @@ public class MyItem implements ClusterItem {
 
     @Override
     public LatLng getPosition() {
-        return new LatLng(location.latitude,location.longitude);
+        return new LatLng(location.latitude, location.longitude);
     }
 
     @Override

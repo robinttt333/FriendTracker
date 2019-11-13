@@ -27,6 +27,9 @@
         />
 
     <EditText
+
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:id="@+id/comment_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +40,6 @@
         android:hint="Write a comment here"
         android:inputType="textMultiLine"
         android:padding="15dp"
-        android:textColor="@color/textColor"
         />
 
     <ImageButton

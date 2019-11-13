@@ -34,6 +34,8 @@
         android:textColor="@color/textColor" />
 
     <Button
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:id="@+id/click_edit_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,6 +48,8 @@
         android:text="Edit Post" />
 
     <Button
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:id="@+id/click_delete_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

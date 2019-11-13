@@ -42,7 +42,7 @@ public class SetupActivity extends AppCompatActivity {
     private Button SaveInformationButton;
     private CircleImageView ProfileImage;
     private FirebaseAuth mAuth;
-    private DatabaseReference UsersRef;
+    private DatabaseReference UsersRef,FriendsRef;
     String currentUserId;
     private StorageReference UserProfileImageRef;
     private ProgressDialog loadingBar;
@@ -57,6 +57,7 @@ public class SetupActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         currentUserId = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+        FriendsRef = FirebaseDatabase.getInstance().getReference().child("Friends");
         UserProfileImageRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
         UserName = findViewById(R.id.setup_username);
         FullName = findViewById(R.id.setup_full_name);
@@ -195,8 +196,19 @@ public class SetupActivity extends AppCompatActivity {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     if (task.isSuccessful()) {
-                        SendUserToMainActivity();
-                        Toast.makeText(SetupActivity.this, "Profile created successfully", Toast.LENGTH_SHORT).show();
+                        HashMap friendsMap = new HashMap();
+                        friendsMap.put("friend",true);
+                        FriendsRef.child(currentUserId).child(currentUserId).updateChildren(friendsMap).addOnCompleteListener(new OnCompleteListener() {
+                            @Override
+                            public void onComplete(@NonNull Task task) {
+                                if(task.isSuccessful()){
+                                    SendUserToMainActivity();
+                                    Toast.makeText(SetupActivity.this, "Profile created successfully", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+                        });
+
                     } else {
                         Toast.makeText(SetupActivity.this, "Error occurred: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
 

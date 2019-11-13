@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         DisplayAllPosts();
-        addLocationListener();
+        if(!currentUser.isEmpty())
+            addLocationListener();
 
     }
 

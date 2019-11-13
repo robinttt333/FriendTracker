@@ -18,6 +18,9 @@
         />
 
     <EditText
+
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:id="@+id/register_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,6 +37,9 @@
         android:padding="10dp" />
 
     <EditText
+
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:id="@+id/register_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,6 +57,9 @@
         android:padding="10dp" />
 
     <EditText
+
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:id="@+id/register_password_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

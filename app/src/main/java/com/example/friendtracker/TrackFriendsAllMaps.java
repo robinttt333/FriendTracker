@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.webkit.GeolocationPermissions;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -140,7 +141,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
         }
 
         @Override
-        protected void onClusterItemRendered(MyItem clusterItem, final Marker marker) {
+        protected void onClusterItemRendered(final MyItem clusterItem, final Marker marker) {
             Glide.with(TrackFriendsAllMaps.this)
                     .load(clusterItem.getProfileImage())
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -150,6 +151,9 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                             mImageView.setImageDrawable(resource);
                             marker.setIcon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon()));
+                            marker.setTitle(clusterItem.getUsername());
+                            marker.setSnippet("Last located on " + clusterItem.getDate() + " at time " + clusterItem.getTime());
+                            if(clusterItem.getUsername().equals("You"))marker.showInfoWindow();
                         }
 
                         @Override
@@ -161,7 +165,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
         @Override
         protected void onBeforeClusterRendered(Cluster<MyItem> cluster, MarkerOptions markerOptions) {
-            super.onBeforeClusterRendered(cluster,markerOptions);
+            super.onBeforeClusterRendered(cluster, markerOptions);
         }
 
         @Override
@@ -172,7 +176,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
     @Override
     public boolean onClusterClick(Cluster<MyItem> cluster) {
-       LatLngBounds.Builder builder = LatLngBounds.builder();
+        LatLngBounds.Builder builder = LatLngBounds.builder();
         for (ClusterItem item : cluster.getItems()) {
             builder.include(item.getPosition());
         }
@@ -225,8 +229,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
                                     final String friendProfileImage;
                                     if (dataSnapshot.hasChild("profileImage")) {
                                         friendProfileImage = dataSnapshot.child("profileImage").getValue().toString();
-                                    }
-                                    else friendProfileImage = "";
+                                    } else friendProfileImage = "";
 
                                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations").child(friendUid);
                                     GeoFire geoFire = new GeoFire(ref);
@@ -234,10 +237,27 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
                                         @Override
                                         public void onLocationResult(String key, GeoLocation location) {
                                             if (location != null) {
-                                                MyItem item = new MyItem(friendUserName, friendProfileImage, location);
-                                                mClusterManager.addItem(item);
-                                                mClusterManager.cluster();
+                                                final GeoLocation lastLocation = location;
+                                                FirebaseDatabase.getInstance().getReference().child("LastUpdated").child(friendUid).addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        if (dataSnapshot.exists()) {
+                                                            final String date = dataSnapshot.child("date").getValue().toString();
+                                                            final String time = dataSnapshot.child("time").getValue().toString();
+                                                            MyItem item;
+                                                            if(!FirebaseAuth.getInstance().getCurrentUser().getUid().equals(friendUid))item = new MyItem(friendUserName, friendProfileImage, date, time, lastLocation);
+                                                            else item = new MyItem("You", friendProfileImage, date, time, lastLocation);
+                                                            mClusterManager.addItem(item);
+                                                            mClusterManager.cluster();
 
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
 
                                             }
                                         }

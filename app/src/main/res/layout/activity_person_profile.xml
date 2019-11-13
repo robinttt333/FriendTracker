@@ -105,6 +105,9 @@
                 android:layout_below="@+id/person_profile_gender"
                 >
                 <Button
+
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/person_profile_gender"
@@ -115,6 +118,9 @@
                     android:layout_marginLeft="70dp"
                     />
                 <Button
+
+                    android:textColor="@color/textColor"
+                    android:textColorHint="@color/textColor"
                     android:layout_width="230dp"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/person_profile_gender"
