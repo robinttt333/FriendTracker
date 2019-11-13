@@ -11,6 +11,7 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.firebase.FirebaseError;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -29,7 +30,9 @@ public class GPSLocationListener implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Locations").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user == null )return;
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Locations").child(user.getUid());
         GeoFire geoFire = new GeoFire(ref);
         geoFire.setLocation("Location", new GeoLocation(location.getLatitude(), location.getLongitude()));
 

@@ -69,15 +69,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     FirebaseDatabase.getInstance().getReference().child("LastUpdated").child(uid).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            LatLng lastLocation = new LatLng(location.latitude,location.longitude);
-                            CameraPosition cameraPosition = new CameraPosition.Builder()
-                                    .target(lastLocation)
-                                    .build();
-                            mMap.addMarker(new MarkerOptions().position(lastLocation)
-                                    .title(dataSnapshot.child("date").getValue().toString() +" " + dataSnapshot.child("time").getValue().toString())).showInfoWindow();
-                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                            if(dataSnapshot.exists()){
+
+                                final String date = dataSnapshot.child("date").getValue().toString();
+                                final String time = dataSnapshot.child("time").getValue().toString();
+
+                                FirebaseDatabase.getInstance().getReference().child("Users").child(uid).addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        LatLng lastLocation = new LatLng(location.latitude,location.longitude);
+                                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                                .target(lastLocation)
+                                                .build();
+                                        mMap.addMarker(new MarkerOptions().position(lastLocation)
+                                                .title(dataSnapshot.child("username").getValue().toString()).snippet("Last Updated on "+ date + " at time " + time)).showInfoWindow();
+                                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
 
 
+                            }
                         }
 
                         @Override

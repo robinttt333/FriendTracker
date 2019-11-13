@@ -102,6 +102,18 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
     }
 
+    public static boolean isValidContextForGlide(final Context context) {
+        if (context == null) {
+            return false;
+        }
+        if (context instanceof Activity) {
+            final Activity activity = (Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                return false;
+            }
+        }
+        return true;
+    }
     @Override
     public void onClusterInfoWindowClick(Cluster<MyItem> cluster) {
 
@@ -135,32 +147,42 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
         }
 
         @Override
+        protected int getBucket(Cluster<MyItem> cluster) {
+            return cluster.getSize();
+        }
+
+        @Override
         protected void onBeforeClusterItemRendered(MyItem item, MarkerOptions markerOptions) {
             Bitmap icon = mIconGenerator.makeIcon();
             markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
         }
 
+
         @Override
         protected void onClusterItemRendered(final MyItem clusterItem, final Marker marker) {
-            Glide.with(TrackFriendsAllMaps.this)
-                    .load(clusterItem.getProfileImage())
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .thumbnail(0.1f)
-                    .into(new CustomTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            mImageView.setImageDrawable(resource);
-                            marker.setIcon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon()));
-                            marker.setTitle(clusterItem.getUsername());
-                            marker.setSnippet("Last located on " + clusterItem.getDate() + " at time " + clusterItem.getTime());
-                            if(clusterItem.getUsername().equals("You"))marker.showInfoWindow();
-                        }
+            final Context  context = getApplicationContext();
+            if(!TrackFriendsAllMaps.this.isFinishing()){
+               Log.d("item",clusterItem.getUsername());
+               Glide.with(TrackFriendsAllMaps.this)
+                       .load(clusterItem.getProfileImage())
+                       .diskCacheStrategy(DiskCacheStrategy.ALL)
+                       .thumbnail(0.1f)
+                       .into(new CustomTarget<Drawable>() {
+                           @Override
+                           public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                               mImageView.setImageDrawable(resource);
+                               marker.setIcon(BitmapDescriptorFactory.fromBitmap(mIconGenerator.makeIcon()));
+                               marker.setTitle(clusterItem.getUsername());
+                               marker.setSnippet("Last located on " + clusterItem.getDate() + " at time " + clusterItem.getTime());
+                               if(clusterItem.getUsername().equals("You"))marker.showInfoWindow();
+                           }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                           @Override
+                           public void onLoadCleared(@Nullable Drawable placeholder) {
 
-                        }
-                    });
+                           }
+                       });
+           }
         }
 
         @Override
@@ -206,6 +228,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
         mMap.setOnInfoWindowClickListener(mClusterManager);
         mClusterManager.setOnClusterClickListener(this);
         mClusterManager.setOnClusterItemClickListener(this);
+        mClusterManager.clearItems();
         addItems();
     }
 
@@ -238,7 +261,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
                                         public void onLocationResult(String key, GeoLocation location) {
                                             if (location != null) {
                                                 final GeoLocation lastLocation = location;
-                                                FirebaseDatabase.getInstance().getReference().child("LastUpdated").child(friendUid).addValueEventListener(new ValueEventListener() {
+                                                FirebaseDatabase.getInstance().getReference().child("LastUpdated").child(friendUid).addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                         if (dataSnapshot.exists()) {
@@ -249,6 +272,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
                                                             else item = new MyItem("You", friendProfileImage, date, time, lastLocation);
                                                             mClusterManager.addItem(item);
                                                             mClusterManager.cluster();
+
 
                                                         }
                                                     }
@@ -280,6 +304,7 @@ public class TrackFriendsAllMaps extends FragmentActivity implements OnMapReadyC
 
 
                     }
+
 
                 } else {
                     Toast.makeText(TrackFriendsAllMaps.this, "You don't have any friends as of now", Toast.LENGTH_SHORT);

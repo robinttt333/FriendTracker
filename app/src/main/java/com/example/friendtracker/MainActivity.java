@@ -145,8 +145,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         DisplayAllPosts();
-        if(!currentUser.isEmpty())
-            addLocationListener();
+        addLocationListener();
 
     }
 
@@ -455,5 +454,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(TrackFriendsAllIntent);
     }
 
-
 }
+
