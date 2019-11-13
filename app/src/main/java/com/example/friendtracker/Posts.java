@@ -33,7 +33,7 @@ public class Posts {
     }
 
     public String getTime() {
-        return time;
+        return time.substring(0,time.lastIndexOf(":"));
     }
 
     public void setTime(String time) {

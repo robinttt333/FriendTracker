@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
-    android:background="@color/colorProflie"
+    android:layout_margin="5dp"
+    android:background="@color/mainBackground"
     android:orientation="horizontal"
     android:id="@+id/click_find_friends"
     >

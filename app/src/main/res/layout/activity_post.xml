@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PostActivity"
-    android:background="@drawable/download"
+    android:background="@color/colorPrimary"
     >
 
     <include
@@ -37,10 +37,14 @@
         android:layout_alignParentBottom="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="142dp"
-        android:background="@drawable/inputs"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/mainBackground"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Post description"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
         android:inputType="textMultiLine"
         android:padding="15dp" />
 
@@ -53,10 +57,10 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="73dp"
         android:width="200dp"
-        android:background="@drawable/button"
+        android:background="@color/buttonColor"
         android:padding="10dp"
         android:text="Update Post"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/textColor"
         android:textSize="18sp" />
 
 </RelativeLayout>

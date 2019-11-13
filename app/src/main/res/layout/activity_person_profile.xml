@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PersonProfileActivity"
-    android:background="@color/colorProflie">
+    android:background="@color/colorPrimary">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -110,7 +110,7 @@
                     android:layout_below="@+id/person_profile_gender"
                     android:id="@+id/person_profile_send_friend_request_button"
                     android:layout_marginTop="10dp"
-                    android:background="@color/colorPrimaryDark"
+                    android:background="@color/buttonColor"
                     android:text="Send Friend Request"
                     android:layout_marginLeft="70dp"
                     />
@@ -120,7 +120,7 @@
                     android:layout_below="@+id/person_profile_gender"
                     android:id="@+id/person_profile_decline_friend_request_button"
                     android:layout_marginTop="10dp"
-                    android:background="@color/colorPrimary"
+                    android:background="@android:color/holo_red_light"
                     android:text="Decline Friend Request"
                     android:layout_marginLeft="70dp"
 

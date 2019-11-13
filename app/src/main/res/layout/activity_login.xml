@@ -4,10 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/download"
+    android:background="@color/colorPrimary"
     android:padding="5dp"
     tools:context=".LoginActivity">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/logo"
+        android:background="@color/colorPrimary"
+        />
 
     <EditText
         android:id="@+id/login_email"
@@ -57,7 +65,7 @@
         android:layout_marginStart="25dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="249dp"
-        android:background="@drawable/button"
+        android:background="@color/buttonColor"
         android:padding="15dp"
         android:text="Login"
         android:textSize="20dp" />
@@ -74,6 +82,7 @@
         android:layout_marginBottom="186dp"
         android:text="Don't have an account?Need new account."
         android:textAlignment="center"
+        android:textColor="@color/textColor"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -90,6 +99,7 @@
         android:layout_marginBottom="140dp"
         android:text="Or SignIn With"
         android:textAlignment="center"
+        android:textColor="@color/textColor"
         android:textSize="20sp"
         android:textStyle="bold" />
 

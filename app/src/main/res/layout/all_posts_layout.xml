@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@color/mainBackground"
+    android:background="@color/cardBackground"
     >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/post_border"
+        android:layout_marginTop="5dp"
+        android:background="@color/mainBackground"
         android:orientation="vertical">
 
         <LinearLayout
@@ -41,7 +41,7 @@
                     android:layout_marginTop="8dp"
                     android:text="username"
                     android:textAlignment="textStart"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/textColor"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -67,7 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:text="Date"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/textColor"
                         android:textSize="13sp" />
 
                     <TextView
@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:text="Time"
-                        android:textColor="@android:color/black"
+                        android:textColor="@color/textColor"
                         android:textSize="13sp" />
 
 
@@ -94,7 +94,8 @@
             android:layout_marginRight="15dp"
             android:padding="3dp"
             android:text="Post Description"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textColor"
+            android:textColorHint="@color/textColor"
             android:textSize="14sp" />
 
         <ImageView
@@ -116,9 +117,10 @@
             >
 
             <ImageButton
+                android:background="@color/mainBackground"
                 android:id="@+id/like_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/dislike"
             />
 
@@ -128,15 +130,16 @@
                 android:layout_height="wrap_content"
                 android:text="0 likes"
                 android:padding="15dp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/textColor"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 />
 
             <ImageButton
+                android:background="@color/mainBackground"
                 android:id="@+id/comment_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/comment"
                 android:layout_marginLeft="150dp"
                 android:baselineAlignBottom="false"
@@ -146,4 +149,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</androidx.cardview.widget.CardView>

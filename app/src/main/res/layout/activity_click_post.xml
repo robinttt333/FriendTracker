@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/download"
+    android:background="@color/colorPrimary"
     tools:context=".ClickPostActivity">
 
     <ImageView
@@ -31,7 +31,7 @@
         android:padding="10dp"
         android:text="Description"
         android:textSize="20sp"
-        android:textColor="@android:color/black" />
+        android:textColor="@color/textColor" />
 
     <Button
         android:id="@+id/click_edit_button"
@@ -42,7 +42,7 @@
         android:layout_marginStart="-3dp"
         android:layout_marginBottom="66dp"
 
-        android:background="@drawable/button"
+        android:background="@color/buttonColor"
         android:text="Edit Post" />
 
     <Button
@@ -52,6 +52,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/button"
+        android:background="@android:color/holo_red_light"
         android:text="Delete Post" />
 </RelativeLayout>

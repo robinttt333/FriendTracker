@@ -2,13 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorProflie">
+    android:background="@color/mainBackground">
 
     <LinearLayout
         android:id="@+id/friends_layout_main_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/post_border"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -23,16 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
 
             <TextView
+                android:textColorHint="@color/textColor"
                 android:id="@+id/friends_layout_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Username"
                 android:textSize="18dp"
                 android:textStyle="bold"
-                android:textColor="@color/mainBackground"
+                android:textColor="@color/textColor"
                 />
 
             <TextView
@@ -40,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Full Name"
-                android:textColor="@color/mainBackground"
+                android:textColor="@color/textColor"
                 />
 
             <LinearLayout
@@ -53,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:text="Country"
                     android:layout_weight="1"
-                    android:textColor="@color/mainBackground"
+                    android:textColor="@color/textColor"
                     />
 
                 <TextView
@@ -62,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:text="Date of birth"
                     android:layout_weight="1"
-                    android:textColor="@color/mainBackground"
+                    android:textColor="@color/textColor"
                     android:textAlignment="viewEnd"
 
                     />
@@ -76,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hey there I am using this app"
                 android:textSize="17dp"
-                android:textColor="@color/mainBackground"
+                android:textColor="@color/textColor"
                 />
         </LinearLayout>
 

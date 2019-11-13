@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +33,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -130,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutManager.setReverseLayout(true);
         linearLayoutManager.setStackFromEnd(true);
 
+
         postList.setLayoutManager(linearLayoutManager);
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -168,74 +172,106 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public class PostAdaptor extends FirebaseRecyclerAdapter<Posts, PostsViewHolder>{
+
+        public PostAdaptor(@NonNull FirebaseRecyclerOptions<Posts> options) {
+            super(options);
+        }
+
+        @Override
+        protected void onBindViewHolder(@NonNull PostsViewHolder holder, final int position, @NonNull Posts model) {
+
+            holder.username.setText(model.getFullname());
+            holder.time.setText("" + model.getTime());
+            holder.date.setText("" + model.getDate());
+            holder.description.setText("" + model.getDescription());
+            Picasso.get().load(model.getProfileImage()).into(holder.user_post_image);
+            Picasso.get().load(model.getPostImage()).into(holder.postImage);
+            holder.setLikeButtonStatus(getRef(position).getKey());
+            holder.mview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent ClickPostIntent = new Intent(MainActivity.this, ClickPostActivity.class);
+                    ClickPostIntent.putExtra("PostKey", getRef(position).getKey());
+
+                    startActivity(ClickPostIntent);
+                }
+            });
+
+            holder.likePostButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    LikeChecker = true;
+
+                    LikesRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (LikeChecker.equals(true)) {
+                                if (dataSnapshot.child(getRef(position).getKey()).hasChild(currentUser)) {
+                                    LikesRef.child(getRef(position).getKey()).child(currentUser).removeValue();
+                                } else {
+                                    LikesRef.child(getRef(position).getKey()).child(currentUser).setValue(true);
+                                }
+                                LikeChecker = false;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            });
+
+            holder.commentPostButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendToCommentsActivity(getRef(position).getKey());
+                }
+            });
+        }
+
+        @NonNull
+        @Override
+        public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_posts_layout, parent, false);
+            PostsViewHolder viewHolder = new PostsViewHolder(view);
+            return viewHolder;
+        }
+
+        public void deletePost(int position){
+            getSnapshots().getSnapshot(position).getRef().removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        Toast.makeText(MainActivity.this,"Successfully deleted post",Toast.LENGTH_SHORT);
+                    }
+                }
+            });
+        }
+
+    };
     private void DisplayAllPosts() {
         Query SortPostsInDescendingOrder = PostsRef.orderByChild("date");
         FirebaseRecyclerOptions<Posts> options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(SortPostsInDescendingOrder, Posts.class).build();
-        FirebaseRecyclerAdapter<Posts, PostsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Posts, PostsViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull PostsViewHolder holder, final int position, @NonNull Posts model) {
 
-                holder.username.setText(model.getFullname());
-                holder.time.setText("" + model.getTime());
-                holder.date.setText("" + model.getDate());
-                holder.description.setText("" + model.getDescription());
-                Picasso.get().load(model.getProfileImage()).into(holder.user_post_image);
-                Picasso.get().load(model.getPostImage()).into(holder.postImage);
-                holder.setLikeButtonStatus(getRef(position).getKey());
-                holder.mview.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent ClickPostIntent = new Intent(MainActivity.this, ClickPostActivity.class);
-                        ClickPostIntent.putExtra("PostKey", getRef(position).getKey());
-
-                        startActivity(ClickPostIntent);
-                    }
-                });
-
-                holder.likePostButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        LikeChecker = true;
-
-                        LikesRef.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                if (LikeChecker.equals(true)) {
-                                    if (dataSnapshot.child(getRef(position).getKey()).hasChild(currentUser)) {
-                                        LikesRef.child(getRef(position).getKey()).child(currentUser).removeValue();
-                                    } else {
-                                        LikesRef.child(getRef(position).getKey()).child(currentUser).setValue(true);
-                                    }
-                                    LikeChecker = false;
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                });
-
-                holder.commentPostButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        sendToCommentsActivity(getRef(position).getKey());
-                    }
-                });
-            }
-
-            @NonNull
-            @Override
-            public PostsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.all_posts_layout, parent, false);
-                PostsViewHolder viewHolder = new PostsViewHolder(view);
-                return viewHolder;
-            }
-        };
+        final PostAdaptor firebaseRecyclerAdapter = new PostAdaptor(options);
         postList.setAdapter(firebaseRecyclerAdapter);
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                firebaseRecyclerAdapter.deletePost(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(postList);
+
         firebaseRecyclerAdapter.startListening();
+
     }
 
     private void sendToCommentsActivity(String PostKey) {
@@ -348,9 +384,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.nav_track_friends_all:
                 sendUserToTrackFriendsAllMapsActivity();
-                break;
-            case R.id.nav_home:
-                Toast.makeText(this, "Home clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.nav_logout:
                 mAuth.signOut();
