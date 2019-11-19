@@ -15,11 +15,6 @@
         android:layout_marginTop="5dp"
         android:src="@drawable/profile"
         />
-    <ImageView
-        android:layout_width="5dp"
-        android:layout_height="5dp"
-        android:src="@drawable/ic_account_circle_black_24dp"
-        />
 
     <TextView
         android:id="@+id/nav_user_full_name"
