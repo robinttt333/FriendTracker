@@ -1,1 +1,1 @@
-Friend Tracker is a social networking application that lets you keep track of ypur friends location.
+Friend Tracker is a social networking application that lets you keep track of your friends location.
